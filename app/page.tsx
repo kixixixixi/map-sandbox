@@ -2,6 +2,7 @@
 
 import React, { NextPage } from "next"
 import { useEffect, useState } from "react"
+import { fromGeoPositionToImageUrl } from "utils/calculate"
 
 const Index: NextPage = () => {
   const [position, setPosition] = useState<GeolocationPosition>()
@@ -12,9 +13,17 @@ const Index: NextPage = () => {
   }, [])
   return (
     <>
-      <section>
-        {position?.coords.latitude}:{position?.coords.longitude}
-      </section>
+      <main>
+        {position && (
+          <img
+            src={fromGeoPositionToImageUrl({ position, z: 18 })}
+            referrerPolicy="no-referrer"
+          />
+        )}
+        <section>
+          {position?.coords.latitude}:{position?.coords.longitude}
+        </section>
+      </main>
     </>
   )
 }
