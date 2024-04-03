@@ -19,8 +19,50 @@ export const fromGeoPositionToImageUrl = (props: {
   position: GeolocationPosition
   z: number
 }): string => {
+  return fromPointToUrl(fromGeoPositionToPoint(props))
+}
+
+export const fromPointToUrl = ({
+  x,
+  y,
+  z,
+  offsetX,
+  offsetY,
+}: {
+  x: number
+  y: number
+  z: number
+  offsetX?: number
+  offsetY?: number
+}): string =>
+  `https://cyberjapandata.gsi.go.jp/xyz/std/${z}/${Math.floor(
+    x / 256 + (offsetX ?? 0)
+  )}/${Math.floor(y / 256 + (offsetY ?? 0))}.png`
+
+export const fromGeoPositionToImageUrlList = ({
+  height,
+  width,
+  ...props
+}: {
+  position: GeolocationPosition
+  z: number
+  height: number
+  width: number
+}): string[][] => {
   const { x, y, z } = fromGeoPositionToPoint(props)
-  return `https://cyberjapandata.gsi.go.jp/xyz/std/${z}/${Math.floor(
-    x / 256
-  )}/${Math.floor(y / 256)}.png`
+  return Array(width)
+    .fill(undefined)
+    .map((_, i) =>
+      Array(height)
+        .fill(undefined)
+        .map((_, j) =>
+          fromPointToUrl({
+            x,
+            y,
+            z,
+            offsetX: i - Math.floor(width / 2),
+            offsetY: j - Math.floor(height / 2),
+          })
+        )
+    )
 }
