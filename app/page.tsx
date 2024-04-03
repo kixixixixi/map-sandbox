@@ -16,6 +16,7 @@ const Index: NextPage = () => {
     window.addEventListener("resize", handleResize)
     navigator.geolocation.getCurrentPosition((position) => {
       setPosition(position)
+      handleResize()
     })
     return () => {
       window.removeEventListener("resize", handleResize)
