@@ -24,7 +24,10 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
               display: "flex",
               justifyContent: "space-between",
               padding: ".5rem 1rem",
+              position: "fixed",
+              top: 0,
               width: "100%",
+              zIndex: 1,
             }}
           >
             <h1 style={{ color: "#fff", lineHeight: 2 }}>Map sandbox</h1>

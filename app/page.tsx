@@ -6,12 +6,18 @@ import { fromGeoPositionToImageUrlList } from "utils/calculate"
 
 const Index: NextPage = () => {
   const [position, setPosition] = useState<GeolocationPosition>()
-  const [tileCount, setTileCount] = useState<{ width: number; height: number }>(
-    {
-      width: 0,
-      height: 0,
-    }
-  )
+  const [tile, setTile] = useState<{
+    width: number
+    height: number
+    offset: { x: number; y: number }
+  }>({
+    width: 0,
+    height: 0,
+    offset: {
+      x: 0,
+      y: 0,
+    },
+  })
   useEffect(() => {
     window.addEventListener("resize", handleResize)
     navigator.geolocation.getCurrentPosition((position) => {
@@ -24,30 +30,61 @@ const Index: NextPage = () => {
   }, [])
   const handleResize = () => {
     const { innerHeight, innerWidth } = window
-    setTileCount({
+    setTile({
       width: Math.ceil(innerWidth / 256),
       height: Math.ceil(innerHeight / 256),
+      offset: {
+        x: (innerWidth % 256) / 4,
+        y: (innerHeight % 256) / 4,
+      },
     })
+    console.log(innerWidth, Math.ceil(innerWidth / 256), (innerWidth % 256) / 2)
   }
   return (
     <>
       <main>
-        <section style={{ display: "grid" }}>
-          {position &&
-            fromGeoPositionToImageUrlList({
-              position,
-              z: 18,
-              ...tileCount,
-            }).map((row, i) =>
-              row.map((url, j) => (
-                <img
-                  src={url}
-                  style={{ gridRowStart: j + 1, gridColumnStart: i + 1 }}
-                />
-              ))
-            )}
-        </section>
-        <section>
+        <div
+          style={{
+            position: "fixed",
+            left: -tile.offset.x,
+            top: -tile.offset.y,
+          }}
+        >
+          <section
+            style={{
+              display: "grid",
+              overflow: "hidden",
+              position: "fixed",
+            }}
+          >
+            {position &&
+              fromGeoPositionToImageUrlList({
+                position,
+                z: 18,
+                ...tile,
+              }).map((row, i) =>
+                row.map((url, j) => (
+                  <div
+                    key={`${i}-${j}`}
+                    style={{
+                      backgroundImage: `url(${url})`,
+                      gridRowStart: j + 1,
+                      gridColumnStart: i + 1,
+                      height: 256,
+                      width: 256,
+                    }}
+                  />
+                ))
+              )}
+          </section>
+        </div>
+        <section
+          style={{
+            position: "fixed",
+            bottom: 0,
+            right: 0,
+          }}
+        >
           {position?.coords.latitude}:{position?.coords.longitude}
         </section>
       </main>
