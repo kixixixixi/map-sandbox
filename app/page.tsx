@@ -76,6 +76,19 @@ const Index: NextPage = () => {
                   />
                 ))
               )}
+            <div
+              style={{
+                backgroundColor: "blue",
+                border: "solid 1px white",
+                borderRadius: "8px",
+                height: "12px",
+                left: "50dvw",
+                position: "fixed",
+                top: "50dvh",
+                width: "12px",
+                zIndex: 2,
+              }}
+            />
           </section>
         </div>
         <section
