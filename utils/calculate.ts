@@ -4,7 +4,7 @@ export const fromGeoPositionToPoint = ({
 }: {
   position: GeolocationPosition
   z: number
-}): { x: number; y: number; z: number } => {
+}): { x: number; y: number; z?: number } => {
   return {
     x: 2 ** (z + 7) * (position.coords.longitude / 180 + 1),
     y:
@@ -22,6 +22,14 @@ export const fromGeoPositionToImageUrl = (props: {
   return fromPointToUrl(fromGeoPositionToPoint(props))
 }
 
+export const fromGeoPositionToOffsetInImage = (props: {
+  position: GeolocationPosition
+  z: number
+}): { x: number; y: number } => {
+  const { x, y } = fromGeoPositionToPoint(props)
+  return { x: x % 256, y: y % 256 }
+}
+
 export const fromPointToUrl = ({
   x,
   y,
@@ -31,11 +39,11 @@ export const fromPointToUrl = ({
 }: {
   x: number
   y: number
-  z: number
+  z?: number
   offsetX?: number
   offsetY?: number
 }): string =>
-  `https://cyberjapandata.gsi.go.jp/xyz/std/${z}/${Math.floor(
+  `https://cyberjapandata.gsi.go.jp/xyz/std/${z ?? 18}/${Math.floor(
     x / 256 + (offsetX ?? 0)
   )}/${Math.floor(y / 256 + (offsetY ?? 0))}.png`
 
