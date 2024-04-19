@@ -31,9 +31,18 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
             }}
           >
             <h1 style={{ color: "#fff", lineHeight: 2 }}>Map sandbox</h1>
-            <p style={{ color: "#ccc", fontSize: ".75rem", lineHeight: 3 }}>
-              ver 0.1.0
-            </p>
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <a
+                href="//github.com/kixixixixi/map-sandbox"
+                style={{ color: "#ccc", lineHeight: 2 }}
+              >
+                Github
+              </a>
+            </div>
           </header>
           <main style={{ height: "100%" }}>{children}</main>
         </div>
