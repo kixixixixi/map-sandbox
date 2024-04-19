@@ -2,7 +2,10 @@
 
 import React, { NextPage } from "next"
 import { useEffect, useState } from "react"
-import { fromGeoPositionToImageUrlList } from "utils/calculate"
+import {
+  fromGeoPositionToImageUrlList,
+  fromGeoPositionToOffsetInImage,
+} from "utils/calculate"
 
 const Index: NextPage = () => {
   const [position, setPosition] = useState<GeolocationPosition>()
@@ -45,37 +48,45 @@ const Index: NextPage = () => {
   return (
     <>
       <main>
-        <section
-          style={{
-            display: "grid",
-            height: `${tile.height * 256}px`,
-            overflow: "hidden",
-            position: "fixed",
-            left: `${tile.offset.x / 2 - 128}px`,
-            top: `${tile.offset.y / 2}px`,
-            width: `${tile.width * 256}px`,
-          }}
-        >
-          {position &&
-            fromGeoPositionToImageUrlList({
-              position,
-              z: 18,
-              ...tile,
-            }).map((row, i) =>
-              row.map((url, j) => (
-                <div
-                  key={`${i}-${j}`}
-                  style={{
-                    backgroundImage: `url(${url})`,
-                    gridRowStart: j + 1,
-                    gridColumnStart: i + 1,
-                    height: 256,
-                    width: 256,
-                  }}
-                />
-              ))
-            )}
-        </section>
+        {position && (
+          <section
+            style={{
+              display: "grid",
+              height: `${tile.height * 256}px`,
+              overflow: "hidden",
+              position: "fixed",
+              left: `${
+                tile.offset.x / 2 -
+                fromGeoPositionToOffsetInImage({ position, z: 18 }).x
+              }px`,
+              top: `${
+                tile.offset.y / 2 -
+                fromGeoPositionToOffsetInImage({ position, z: 18 }).y
+              }px`,
+              width: `${tile.width * 256}px`,
+            }}
+          >
+            {position &&
+              fromGeoPositionToImageUrlList({
+                position,
+                z: 18,
+                ...tile,
+              }).map((row, i) =>
+                row.map((url, j) => (
+                  <div
+                    key={`${i}-${j}`}
+                    style={{
+                      backgroundImage: `url(${url})`,
+                      gridRowStart: j + 1,
+                      gridColumnStart: i + 1,
+                      height: 256,
+                      width: 256,
+                    }}
+                  />
+                ))
+              )}
+          </section>
+        )}
         <div
           style={{
             backgroundColor: "blue",
